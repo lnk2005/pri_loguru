@@ -2,40 +2,28 @@ import builtins
 import datetime
 import logging
 import threading
-from dataclasses import dataclass
-from typing import List
 
 from elasticsearch import Elasticsearch, helpers
 
-
-@dataclass
-class EsHandlersConfig:
-    use_https: bool
-
-    host: str | List[str]
-    author: str
-    passwd: str
-
-    cert_path: str
-    verify_certs: bool
+from conf import EsHandlersConfig
 
 
 class EsHandlers(logging.Handler):
-    def __init__(self, index: str, queue_size: int = 100, es_conf: EsHandlersConfig = None):
+    def __init__(self, index: str, queue_size: int = 100, conf: EsHandlersConfig = None):
         logging.Handler.__init__(self)
         self.index = index
 
-        if es_conf.use_https:
+        if conf.use_https:
             self.es = Elasticsearch(
-                es_conf.host,
-                basic_auth=(es_conf.author, es_conf.passwd),
-                ca_certs=es_conf.cert_path,
-                verify_certs=es_conf.verify_certs,
+                conf.host,
+                basic_auth=(conf.author, conf.passwd),
+                ca_certs=conf.cert_path,
+                verify_certs=conf.verify_certs,
             )
         else:
             self.es = Elasticsearch(
-                es_conf.host,
-                basic_auth=(es_conf.author, es_conf.passwd),
+                conf.host,
+                basic_auth=(conf.author, conf.passwd),
             )
 
         self._lock = threading.Lock()

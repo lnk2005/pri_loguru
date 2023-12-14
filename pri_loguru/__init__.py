@@ -2,22 +2,26 @@ import logging
 
 from loguru import logger
 
-from .handler import EsHandlers
+from conf import EsHandlersConfig
+from handler import EsHandlers
 
 
 # TODO logger config update
 # TODO set logger level
+# TODO 构建一个自定义的 loggr 类，添加 add 方法
 def get_logger(
-    index: str = "debug",
-    queue_size: int = 1,
-    enable_console: bool = False,
-    enable_es: bool = True,
+        index: str = "debug",
+        queue_size: int = 1,
+        enable_console: bool = False,
+        enable_es: bool = True,
+        es_conf: EsHandlersConfig = None,
 ) -> logging.Logger:
     """
     a logger to catch logs
 
     if you want to turn off console output, must turn on es.
 
+    :param es_conf: es handler 的配置
     :param index: if es is enabled, this is the of log
     :param queue_size: the size of cache queue
     :param enable_console: enable console to output logs
@@ -31,7 +35,7 @@ def get_logger(
 
     # use es to collect log
     if enable_es:
-        _handler = EsHandlers(index=index, queue_size=queue_size)
+        _handler = EsHandlers(index=index, queue_size=queue_size, conf=es_conf)
         _logger.add(
             _handler,
             format="{time:YYYY-MM-DD HH:mm:ss!UTC+8} {level} {message}",
