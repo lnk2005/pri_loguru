@@ -9,9 +9,9 @@ from conf import EsHandlersConfig
 
 
 class EsHandlers(logging.Handler):
-    def __init__(self, index: str, queue_size: int = 100, conf: EsHandlersConfig = None):
+    def __init__(self, conf: EsHandlersConfig = None):
         logging.Handler.__init__(self)
-        self.index = index
+        self.index = conf.index
 
         if conf.use_https:
             self.es = Elasticsearch(
@@ -27,7 +27,7 @@ class EsHandlers(logging.Handler):
             )
 
         self._lock = threading.Lock()
-        self._queue_size = queue_size
+        self._queue_size = conf.queue_size
         self._queue = []
 
     def emit(self, record):

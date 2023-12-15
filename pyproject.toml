@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pri-loguru"
-version = "0.1.1a0"
+version = "0.1.1a1"
 description = ""
 authors = ["lnk2005 <wza82877638@gmail.com>"]
 readme = "README.md"

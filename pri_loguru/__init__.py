@@ -6,12 +6,10 @@ from conf import EsHandlersConfig
 from handler import EsHandlers
 
 
-# TODO logger config update
+# TODO logger config update 使用一组表示 handler 的配置来构建 logger
 # TODO set logger level
-# TODO 构建一个自定义的 loggr 类，添加 add 方法
 def get_logger(
         index: str = "debug",
-        queue_size: int = 1,
         enable_console: bool = False,
         enable_es: bool = True,
         es_conf: EsHandlersConfig = None,
@@ -35,7 +33,7 @@ def get_logger(
 
     # use es to collect log
     if enable_es:
-        _handler = EsHandlers(index=index, queue_size=queue_size, conf=es_conf)
+        _handler = EsHandlers(conf=es_conf)
         _logger.add(
             _handler,
             format="{time:YYYY-MM-DD HH:mm:ss!UTC+8} {level} {message}",
@@ -45,3 +43,15 @@ def get_logger(
 
     _logger.info(f"set a logger for {index}")
     return logger
+
+
+def get_es_handler(_conf: EsHandlersConfig = None) -> EsHandlers:
+    """
+
+    :param _conf: Handler config
+    :return:
+    """
+    if not _conf:
+        raise ValueError("conf can not be None")
+
+    return EsHandlers(conf=_conf)
